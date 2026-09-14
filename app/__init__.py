@@ -1,1 +1,0 @@
-# Smart Invoice Generator App
