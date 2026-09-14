@@ -1,0 +1,74 @@
+{% extends "base.html" %}
+{% block title %}ইনভয়েস সমূহ - স্মার্ট ইনভয়েস{% endblock %}
+{% block body %}
+<div class="min-h-screen flex">
+    <aside class="w-64 bg-primary-800 text-white hidden md:flex flex-col fixed h-full">
+        <div class="p-5 border-b border-primary-700"><div class="flex items-center gap-3"><div class="w-10 h-10 bg-white text-primary-700 rounded-lg flex items-center justify-center font-bold">সি</div><span class="font-bold">স্মার্ট ইনভয়েস</span></div></div>
+        <nav class="flex-1 p-4 space-y-1">
+            <a href="/dashboard" class="block px-4 py-2.5 rounded-lg hover:bg-primary-700">ড্যাশবোর্ড</a>
+            <a href="/invoice/create" class="block px-4 py-2.5 rounded-lg hover:bg-primary-700">ইনভয়েস তৈরি করুন</a>
+            <a href="/invoices" class="block px-4 py-2.5 rounded-lg bg-primary-700 font-medium">ইনভয়েস সমূহ</a>
+            <a href="/customers" class="block px-4 py-2.5 rounded-lg hover:bg-primary-700">কাস্টমার</a>
+            <a href="/products" class="block px-4 py-2.5 rounded-lg hover:bg-primary-700">পণ্য ও সেবা</a>
+            <a href="/store" class="block px-4 py-2.5 rounded-lg hover:bg-primary-700">দোকানের তথ্য</a>
+            <a href="/subscription" class="block px-4 py-2.5 rounded-lg hover:bg-primary-700">সাবস্ক্রিপশন</a>
+        </nav>
+        <div class="p-4 border-t border-primary-700"><a href="/logout" class="block px-4 py-2 rounded-lg hover:bg-red-600 text-sm">লগআউট</a></div>
+    </aside>
+    <main class="flex-1 md:ml-64 p-4 md:p-8">
+        <h1 class="text-2xl font-bold mb-6">ইনভয়েস সমূহ</h1>
+        <form class="flex flex-wrap gap-3 mb-4">
+            <input type="text" name="q" value="{{ q or '' }}" placeholder="সার্চ..." class="px-3 py-2 border rounded-lg text-sm">
+            <select name="status" class="px-3 py-2 border rounded-lg text-sm">
+                <option value="">সব স্ট্যাটাস</option>
+                <option value="paid" {% if status=='paid' %}selected{% endif %}>পরিশোধিত</option>
+                <option value="due" {% if status=='due' %}selected{% endif %}>বাকি</option>
+                <option value="partially_paid" {% if status=='partially_paid' %}selected{% endif %}>আংশিক</option>
+                <option value="draft" {% if status=='draft' %}selected{% endif %}>খসড়া</option>
+                <option value="running" {% if status=='running' %}selected{% endif %}>চলমান</option>
+            </select>
+            <input type="date" name="date_from" value="{{ date_from or '' }}" class="px-3 py-2 border rounded-lg text-sm">
+            <input type="date" name="date_to" value="{{ date_to or '' }}" class="px-3 py-2 border rounded-lg text-sm">
+            <button type="submit" class="px-4 py-2 bg-primary-600 text-white rounded-lg text-sm">ফিল্টার</button>
+        </form>
+        <div class="bg-white rounded-xl border overflow-hidden">
+            <table class="w-full text-sm">
+                <thead class="bg-gray-50"><tr>
+                    <th class="px-4 py-3 text-left">ইনভয়েস নম্বর</th>
+                    <th class="px-4 py-3 text-left">কাস্টমার</th>
+                    <th class="px-4 py-3 text-left">তারিখ</th>
+                    <th class="px-4 py-3 text-right">মোট</th>
+                    <th class="px-4 py-3 text-right">জমা</th>
+                    <th class="px-4 py-3 text-right">বাকি</th>
+                    <th class="px-4 py-3 text-center">স্ট্যাটাস</th>
+                    <th class="px-4 py-3 text-center">অ্যাকশন</th>
+                </tr></thead>
+                <tbody>
+                {% for inv in invoices %}
+                <tr class="border-t hover:bg-gray-50">
+                    <td class="px-4 py-3"><a href="/invoice/{{ inv.id }}" class="text-primary-600 hover:underline">{{ inv.invoice_number }}</a></td>
+                    <td class="px-4 py-3">{{ inv.customer.name if inv.customer else '-' }}</td>
+                    <td class="px-4 py-3">{{ inv.invoice_date.strftime('%d/%m/%Y') }}</td>
+                    <td class="px-4 py-3 text-right">৳{{ "%.0f"|format(inv.grand_total) }}</td>
+                    <td class="px-4 py-3 text-right">৳{{ "%.0f"|format(inv.paid_amount) }}</td>
+                    <td class="px-4 py-3 text-right">৳{{ "%.0f"|format(inv.due_amount) }}</td>
+                    <td class="px-4 py-3 text-center text-xs">
+                        {% if inv.status == 'paid' %}পরিশোধিত
+                        {% elif inv.status == 'due' %}বাকি
+                        {% elif inv.status == 'partially_paid' %}আংশিক
+                        {% elif inv.status == 'draft' %}খসড়া
+                        {% else %}চলমান{% endif %}
+                    </td>
+                    <td class="px-4 py-3 text-center">
+                        <a href="/invoice/{{ inv.id }}/print" target="_blank" class="text-primary-600 text-xs hover:underline">প্রিন্ট</a>
+                    </td>
+                </tr>
+                {% else %}
+                <tr><td colspan="8" class="px-4 py-8 text-center text-gray-400">কোনো ইনভয়েস নেই</td></tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </main>
+</div>
+{% endblock %}

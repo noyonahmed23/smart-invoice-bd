@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+{% block title %}অ্যাডমিন ড্যাশবোর্ড{% endblock %}
+{% block body %}
+<div class="min-h-screen flex">
+    <aside class="w-64 bg-gray-900 text-white hidden md:flex flex-col fixed h-full">
+        <div class="p-5 border-b border-gray-700"><span class="font-bold text-lg">অ্যাডমিন প্যানেল</span></div>
+        <nav class="flex-1 p-4 space-y-1">
+            <a href="/admin" class="block px-4 py-2.5 rounded-lg bg-gray-700 font-medium">ড্যাশবোর্ড</a>
+            <a href="/admin/users" class="block px-4 py-2.5 rounded-lg hover:bg-gray-700">সকল ব্যবহারকারী</a>
+            <a href="/admin/payments" class="block px-4 py-2.5 rounded-lg hover:bg-gray-700">পেমেন্ট অনুমোদন</a>
+            <a href="/admin/invoices" class="block px-4 py-2.5 rounded-lg hover:bg-gray-700">সকল ইনভয়েস</a>
+            <a href="/admin/categories" class="block px-4 py-2.5 rounded-lg hover:bg-gray-700">ক্যাটাগরি</a>
+        </nav>
+        <div class="p-4 border-t border-gray-700"><a href="/logout" class="block px-4 py-2 rounded-lg hover:bg-red-600 text-sm">লগআউট</a></div>
+    </aside>
+    <main class="flex-1 md:ml-64 p-4 md:p-8">
+        <h1 class="text-2xl font-bold mb-6">অ্যাডমিন ড্যাশবোর্ড</h1>
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+            <div class="bg-white p-5 rounded-xl border shadow-sm"><div class="text-gray-500 text-sm">মোট ব্যবহারকারী</div><div class="text-2xl font-bold mt-1">{{ total_users }}</div></div>
+            <div class="bg-white p-5 rounded-xl border shadow-sm"><div class="text-gray-500 text-sm">সক্রিয় সাবস্ক্রিপশন</div><div class="text-2xl font-bold text-green-600 mt-1">{{ active_subs }}</div></div>
+            <div class="bg-white p-5 rounded-xl border shadow-sm"><div class="text-gray-500 text-sm">অপেক্ষমাণ পেমেন্ট</div><div class="text-2xl font-bold text-amber-600 mt-1">{{ pending_payments }}</div></div>
+            <div class="bg-white p-5 rounded-xl border shadow-sm"><div class="text-gray-500 text-sm">মেয়াদ শেষ</div><div class="text-2xl font-bold text-red-600 mt-1">{{ expired_subs }}</div></div>
+            <div class="bg-white p-5 rounded-xl border shadow-sm"><div class="text-gray-500 text-sm">মোট ইনভয়েস</div><div class="text-2xl font-bold mt-1">{{ total_invoices }}</div></div>
+            <div class="bg-white p-5 rounded-xl border shadow-sm"><div class="text-gray-500 text-sm">মোট পেমেন্ট</div><div class="text-2xl font-bold text-accent-600 mt-1">৳{{ "%.0f"|format(total_revenue) }}</div></div>
+            <div class="bg-white p-5 rounded-xl border shadow-sm"><div class="text-gray-500 text-sm">আজকের নিবন্ধন</div><div class="text-2xl font-bold mt-1">{{ today_regs }}</div></div>
+        </div>
+    </main>
+</div>
+{% endblock %}

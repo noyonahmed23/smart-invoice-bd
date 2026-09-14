@@ -1,0 +1,146 @@
+{% extends "base.html" %}
+{% block title %}ইনভয়েস তৈরি করুন - স্মার্ট ইনভয়েস{% endblock %}
+{% block body %}
+<div class="min-h-screen flex">
+    <aside class="w-64 bg-primary-800 text-white hidden md:flex flex-col fixed h-full">
+        <div class="p-5 border-b border-primary-700"><div class="flex items-center gap-3"><div class="w-10 h-10 bg-white text-primary-700 rounded-lg flex items-center justify-center font-bold">সি</div><span class="font-bold">স্মার্ট ইনভয়েস</span></div></div>
+        <nav class="flex-1 p-4 space-y-1">
+            <a href="/dashboard" class="block px-4 py-2.5 rounded-lg hover:bg-primary-700">ড্যাশবোর্ড</a>
+            <a href="/invoice/create" class="block px-4 py-2.5 rounded-lg bg-primary-700 font-medium">ইনভয়েস তৈরি করুন</a>
+            <a href="/invoices" class="block px-4 py-2.5 rounded-lg hover:bg-primary-700">ইনভয়েস সমূহ</a>
+            <a href="/customers" class="block px-4 py-2.5 rounded-lg hover:bg-primary-700">কাস্টমার</a>
+            <a href="/products" class="block px-4 py-2.5 rounded-lg hover:bg-primary-700">পণ্য ও সেবা</a>
+            <a href="/store" class="block px-4 py-2.5 rounded-lg hover:bg-primary-700">দোকানের তথ্য</a>
+            <a href="/subscription" class="block px-4 py-2.5 rounded-lg hover:bg-primary-700">সাবস্ক্রিপশন</a>
+        </nav>
+        <div class="p-4 border-t border-primary-700"><a href="/logout" class="block px-4 py-2 rounded-lg hover:bg-red-600 text-sm">লগআউট</a></div>
+    </aside>
+    <main class="flex-1 md:ml-64 p-4 md:p-8">
+        <h1 class="text-2xl font-bold mb-6">নতুন ইনভয়েস তৈরি করুন</h1>
+        <form method="POST" action="/invoice/create" id="invForm" class="space-y-6">
+            <div class="bg-white rounded-xl border p-5">
+                <h2 class="font-semibold mb-3">কাস্টমারের তথ্য</h2>
+                <div class="grid md:grid-cols-3 gap-4">
+                    <div>
+                        <label class="block text-sm mb-1">কাস্টমারের নাম *</label>
+                        <input type="text" name="customer_name" required class="w-full px-3 py-2 border rounded-lg">
+                        <input type="hidden" name="customer_id" value="">
+                    </div>
+                    <div>
+                        <label class="block text-sm mb-1">মোবাইল নম্বর</label>
+                        <input type="text" name="customer_mobile" class="w-full px-3 py-2 border rounded-lg">
+                    </div>
+                    <div>
+                        <label class="block text-sm mb-1">ঠিকানা</label>
+                        <input type="text" name="customer_address" class="w-full px-3 py-2 border rounded-lg">
+                    </div>
+                </div>
+            </div>
+            <div class="bg-white rounded-xl border p-5">
+                <div class="grid md:grid-cols-2 gap-4">
+                    <div><label class="block text-sm mb-1">তারিখ *</label>
+                        <input type="date" name="invoice_date" required id="invDate" class="w-full px-3 py-2 border rounded-lg"></div>
+                    <div><label class="block text-sm mb-1">বাকির তারিখ</label>
+                        <input type="date" name="due_date" class="w-full px-3 py-2 border rounded-lg"></div>
+                </div>
+            </div>
+            <div class="bg-white rounded-xl border p-5">
+                <div class="flex justify-between items-center mb-3">
+                    <h2 class="font-semibold">পণ্য/সেবা</h2>
+                    <button type="button" onclick="addRow()" class="px-3 py-1.5 bg-primary-100 text-primary-700 rounded-lg text-sm font-medium">+ যোগ করুন</button>
+                </div>
+                <div class="overflow-x-auto">
+                    <table class="w-full text-sm">
+                        <thead class="bg-gray-50"><tr>
+                            <th class="px-2 py-2 text-left">পণ্য/সেবা</th>
+                            <th class="px-2 py-2 text-center w-20">পরিমাণ</th>
+                            <th class="px-2 py-2 text-center w-20">একক</th>
+                            <th class="px-2 py-2 text-right w-28">একক মূল্য</th>
+                            <th class="px-2 py-2 text-right w-24">ছাড়</th>
+                            <th class="px-2 py-2 text-right w-28">মোট</th>
+                            <th class="px-2 py-2 w-10"></th>
+                        </tr></thead>
+                        <tbody id="itemsBody"></tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="bg-white rounded-xl border p-5 max-w-md ml-auto">
+                <div class="space-y-2 text-sm">
+                    <div class="flex justify-between"><span>সর্বমোট</span><span id="subtotalDisp">৳০</span></div>
+                    <div class="flex justify-between items-center"><span>ছাড়</span><input type="number" name="discount" value="0" step="0.01" class="w-24 px-2 py-1 border rounded text-right" onchange="calc()"></div>
+                    <div class="flex justify-between items-center"><span>ট্যাক্স</span><input type="number" name="tax" value="0" step="0.01" class="w-24 px-2 py-1 border rounded text-right" onchange="calc()"></div>
+                    <div class="flex justify-between items-center"><span>অতিরিক্ত</span><input type="number" name="extra_charge" value="0" step="0.01" class="w-24 px-2 py-1 border rounded text-right" onchange="calc()"></div>
+                    <div class="flex justify-between font-bold text-lg border-t pt-2"><span>মোট</span><span id="grandDisp">৳০</span></div>
+                    <div class="flex justify-between items-center"><span>জমা</span><input type="number" name="paid_amount" value="0" step="0.01" class="w-24 px-2 py-1 border rounded text-right" onchange="calc()"></div>
+                    <div class="flex justify-between text-red-600"><span>বাকি</span><span id="dueDisp">৳০</span></div>
+                </div>
+            </div>
+            <div class="flex gap-3">
+                <button type="submit" name="status" value="running" class="px-6 py-3 bg-primary-600 text-white rounded-xl font-semibold">সংরক্ষণ করুন</button>
+                <button type="submit" name="status" value="draft" class="px-6 py-3 border rounded-xl">খসড়া</button>
+            </div>
+        </form>
+    </main>
+</div>
+<script>
+let rowCount = 0;
+function addRow() {
+    const tbody = document.getElementById('itemsBody');
+    const tr = document.createElement('tr');
+    tr.id = 'row' + rowCount;
+    tr.innerHTML = `
+        <td class="px-2 py-2">
+            <select name="item_ids" class="w-full px-2 py-1.5 border rounded text-sm" onchange="onProd(this,${rowCount})">
+                <option value="">নির্বাচন / কাস্টম</option>
+                {% for item in items %}
+                <option value="{{ item.id }}" data-name="{{ item.name_bn or item.name }}" data-price="{{ item.price }}" data-unit="{{ item.unit }}">{{ item.name_bn or item.name }}</option>
+                {% endfor %}
+            </select>
+            <input type="text" name="item_names" placeholder="নাম" required class="w-full mt-1 px-2 py-1 border rounded text-sm">
+        </td>
+        <td class="px-2 py-2"><input type="number" name="quantities" value="1" step="0.01" class="w-full px-2 py-1.5 border rounded text-center" onchange="calcRow(${rowCount})"></td>
+        <td class="px-2 py-2"><input type="text" name="units" value="টি" class="w-full px-2 py-1.5 border rounded text-center"></td>
+        <td class="px-2 py-2"><input type="number" name="unit_prices" value="0" step="0.01" class="w-full px-2 py-1.5 border rounded text-right" onchange="calcRow(${rowCount})"></td>
+        <td class="px-2 py-2"><input type="number" name="item_discounts" value="0" step="0.01" class="w-full px-2 py-1.5 border rounded text-right" onchange="calcRow(${rowCount})"></td>
+        <td class="px-2 py-2 text-right" id="total${rowCount}">৳০</td>
+        <td class="px-2 py-2"><button type="button" onclick="this.closest('tr').remove();calc()" class="text-red-500">&times;</button></td>
+    `;
+    tbody.appendChild(tr);
+    rowCount++;
+    calc();
+}
+function onProd(sel, idx) {
+    const opt = sel.options[sel.selectedIndex];
+    if (opt.value) {
+        const tr = sel.closest('tr');
+        tr.querySelector('[name="item_names"]').value = opt.dataset.name;
+        tr.querySelector('[name="unit_prices"]').value = opt.dataset.price;
+        tr.querySelector('[name="units"]').value = opt.dataset.unit;
+        calcRow(idx);
+    }
+}
+function calcRow(idx) {
+    const tr = document.getElementById('row'+idx);
+    if (!tr) return;
+    const qty = parseFloat(tr.querySelector('[name="quantities"]').value)||0;
+    const price = parseFloat(tr.querySelector('[name="unit_prices"]').value)||0;
+    const disc = parseFloat(tr.querySelector('[name="item_discounts"]').value)||0;
+    document.getElementById('total'+idx).textContent = '৳' + ((qty*price)-disc).toFixed(0);
+    calc();
+}
+function calc() {
+    let sub = 0;
+    document.querySelectorAll('[id^="total"]').forEach(el => { sub += parseFloat(el.textContent.replace('৳',''))||0; });
+    const disc = parseFloat(document.querySelector('[name="discount"]').value)||0;
+    const tax = parseFloat(document.querySelector('[name="tax"]').value)||0;
+    const extra = parseFloat(document.querySelector('[name="extra_charge"]').value)||0;
+    const paid = parseFloat(document.querySelector('[name="paid_amount"]').value)||0;
+    const grand = sub - disc + tax + extra;
+    document.getElementById('subtotalDisp').textContent = '৳'+sub.toFixed(0);
+    document.getElementById('grandDisp').textContent = '৳'+grand.toFixed(0);
+    document.getElementById('dueDisp').textContent = '৳'+Math.max(0,grand-paid).toFixed(0);
+}
+document.getElementById('invDate').valueAsDate = new Date();
+addRow();
+</script>
+{% endblock %}

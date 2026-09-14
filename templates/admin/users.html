@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+{% block title %}সকল ব্যবহারকারী{% endblock %}
+{% block body %}
+<div class="min-h-screen flex">
+    <aside class="w-64 bg-gray-900 text-white hidden md:flex flex-col fixed h-full">
+        <div class="p-5 border-b border-gray-700"><span class="font-bold text-lg">অ্যাডমিন প্যানেল</span></div>
+        <nav class="flex-1 p-4 space-y-1">
+            <a href="/admin" class="block px-4 py-2.5 rounded-lg hover:bg-gray-700">ড্যাশবোর্ড</a>
+            <a href="/admin/users" class="block px-4 py-2.5 rounded-lg bg-gray-700 font-medium">সকল ব্যবহারকারী</a>
+            <a href="/admin/payments" class="block px-4 py-2.5 rounded-lg hover:bg-gray-700">পেমেন্ট অনুমোদন</a>
+            <a href="/admin/invoices" class="block px-4 py-2.5 rounded-lg hover:bg-gray-700">সকল ইনভয়েস</a>
+            <a href="/admin/categories" class="block px-4 py-2.5 rounded-lg hover:bg-gray-700">ক্যাটাগরি</a>
+        </nav>
+        <div class="p-4 border-t border-gray-700"><a href="/logout" class="block px-4 py-2 rounded-lg hover:bg-red-600 text-sm">লগআউট</a></div>
+    </aside>
+    <main class="flex-1 md:ml-64 p-4 md:p-8">
+        <h1 class="text-2xl font-bold mb-6">সকল ব্যবহারকারী</h1>
+        <div class="bg-white rounded-xl border overflow-hidden">
+            <table class="w-full text-sm">
+                <thead class="bg-gray-50"><tr>
+                    <th class="px-4 py-3 text-left">ID</th>
+                    <th class="px-4 py-3 text-left">নাম</th>
+                    <th class="px-4 py-3 text-left">মোবাইল</th>
+                    <th class="px-4 py-3 text-left">দোকান</th>
+                    <th class="px-4 py-3 text-left">নিবন্ধন</th>
+                    <th class="px-4 py-3 text-center">বিস্তারিত</th>
+                </tr></thead>
+                <tbody>
+                {% for u in users %}
+                <tr class="border-t">
+                    <td class="px-4 py-3">{{ u.id }}</td>
+                    <td class="px-4 py-3">{{ u.name }}</td>
+                    <td class="px-4 py-3">{{ u.mobile }}</td>
+                    <td class="px-4 py-3">{{ u.store.store_name if u.store else '-' }}</td>
+                    <td class="px-4 py-3">{{ u.created_at.strftime('%d/%m/%Y') }}</td>
+                    <td class="px-4 py-3 text-center"><a href="/admin/user/{{ u.id }}" class="text-primary-600 text-xs hover:underline">দেখুন</a></td>
+                </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </main>
+</div>
+{% endblock %}

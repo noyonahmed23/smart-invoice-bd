@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <title>ইনভয়েস {{ invoice.invoice_number }}</title>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Bengali:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Noto Sans Bengali', sans-serif; font-size: 13px; color: #222; padding: 20px; max-width: 800px; margin: 0 auto; }
+        .header { display: flex; justify-content: space-between; margin-bottom: 20px; border-bottom: 2px solid #2563eb; padding-bottom: 15px; }
+        .logo { max-height: 60px; }
+        .store-name { font-size: 20px; font-weight: 700; color: #1e40af; }
+        .inv-title { font-size: 16px; font-weight: 700; color: #1e40af; text-align: right; }
+        table { width: 100%; border-collapse: collapse; margin: 15px 0; }
+        th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
+        th { background: #f1f5f9; font-weight: 600; }
+        .text-right { text-align: right; }
+        .text-center { text-align: center; }
+        .totals { width: 250px; margin-left: auto; }
+        .totals td { border: none; padding: 4px 8px; }
+        .totals .grand { font-weight: 700; font-size: 15px; border-top: 2px solid #333; }
+        .footer { text-align: center; margin-top: 30px; color: #666; font-size: 12px; }
+        @media print { body { padding: 0; } .no-print { display: none; } }
+    </style>
+</head>
+<body>
+    <div class="no-print" style="margin-bottom:15px;">
+        <button onclick="window.print()" style="padding:8px 20px;background:#2563eb;color:white;border:none;border-radius:6px;cursor:pointer;font-family:inherit;">প্রিন্ট করুন</button>
+        <button onclick="window.close()" style="padding:8px 20px;border:1px solid #ccc;border-radius:6px;cursor:pointer;font-family:inherit;margin-left:8px;">বন্ধ করুন</button>
+    </div>
+    <div class="header">
+        <div>
+            {% if store.logo %}<img src="{{ store.logo }}" class="logo" alt=""><br>{% endif %}
+            <div class="store-name">{{ store.store_name }}</div>
+            <div>{{ store.address }}</div>
+            <div>{{ store.district }}, {{ store.upazila }}</div>
+            <div>মোবাইল: {{ store.phone }}{% if store.alt_phone %}, {{ store.alt_phone }}{% endif %}</div>
+            {% if store.email %}<div>ইমেইল: {{ store.email }}</div>{% endif %}
+            {% if store.bin_number %}<div>BIN: {{ store.bin_number }}</div>{% endif %}
+            {% if store.vat_number %}<div>VAT: {{ store.vat_number }}</div>{% endif %}
+        </div>
+        <div>
+            <div class="inv-title">বিক্রয়/সেবা ইনভয়েস</div>
+            <div style="margin-top:8px;">ইনভয়েস নম্বর: <strong>{{ invoice.invoice_number }}</strong></div>
+            <div>তারিখ: {{ invoice.invoice_date.strftime('%d/%m/%Y') }}</div>
+            {% if invoice.due_date %}<div>বাকির তারিখ: {{ invoice.due_date.strftime('%d/%m/%Y') }}</div>{% endif %}
+        </div>
+    </div>
+    <div style="background:#f8fafc;padding:10px;border-radius:6px;margin-bottom:15px;">
+        <strong>কাস্টমারের নাম:</strong> {{ invoice.customer.name if invoice.customer else '-' }}<br>
+        {% if invoice.customer and invoice.customer.mobile %}<strong>মোবাইল:</strong> {{ invoice.customer.mobile }}<br>{% endif %}
+        {% if invoice.customer and invoice.customer.address %}<strong>ঠিকানা:</strong> {{ invoice.customer.address }}{% endif %}
+    </div>
+    <table>
+        <thead>
+            <tr>
+                <th style="width:40px;">ক্রম</th>
+                <th>বিবরণ</th>
+                <th class="text-center" style="width:80px;">পরিমাণ</th>
+                <th class="text-right" style="width:90px;">একক মূল্য</th>
+                <th class="text-right" style="width:70px;">ছাড়</th>
+                <th class="text-right" style="width:90px;">মোট</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for item in invoice.items %}
+            <tr>
+                <td class="text-center">{{ loop.index }}</td>
+                <td>{{ item.item_name }}</td>
+                <td class="text-center">{{ item.quantity }} {{ item.unit }}</td>
+                <td class="text-right">৳{{ "%.2f"|format(item.unit_price) }}</td>
+                <td class="text-right">৳{{ "%.2f"|format(item.discount) }}</td>
+                <td class="text-right">৳{{ "%.2f"|format(item.total) }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    <table class="totals">
+        <tr><td>সর্বমোট</td><td class="text-right">৳{{ "%.2f"|format(invoice.subtotal) }}</td></tr>
+        {% if invoice.discount %}<tr><td>ছাড়</td><td class="text-right">৳{{ "%.2f"|format(invoice.discount) }}</td></tr>{% endif %}
+        {% if invoice.tax %}<tr><td>ট্যাক্স/VAT</td><td class="text-right">৳{{ "%.2f"|format(invoice.tax) }}</td></tr>{% endif %}
+        {% if invoice.extra_charge %}<tr><td>অতিরিক্ত চার্জ</td><td class="text-right">৳{{ "%.2f"|format(invoice.extra_charge) }}</td></tr>{% endif %}
+        <tr class="grand"><td>মোট</td><td class="text-right">৳{{ "%.2f"|format(invoice.grand_total) }}</td></tr>
+        <tr><td>জমা</td><td class="text-right">৳{{ "%.2f"|format(invoice.paid_amount) }}</td></tr>
+        <tr><td>বাকি</td><td class="text-right">৳{{ "%.2f"|format(invoice.due_amount) }}</td></tr>
+    </table>
+    <div class="footer">
+        <p>আপনার ব্যবসার জন্য ধন্যবাদ।</p>
+        {% if store.footer_note %}<p style="margin-top:5px;">{{ store.footer_note }}</p>{% endif %}
+    </div>
+</body>
+</html>

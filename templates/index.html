@@ -1,0 +1,81 @@
+{% extends "base.html" %}
+{% block title %}স্মার্ট ইনভয়েস জেনারেটর - বাংলাদেশের দোকান ও সার্ভিস ব্যবসার জন্য{% endblock %}
+{% block body %}
+<div class="min-h-screen flex flex-col">
+    <!-- Header -->
+    <header class="bg-primary-700 text-white shadow-lg">
+        <div class="container mx-auto px-4 py-4 flex justify-between items-center">
+            <div class="flex items-center gap-3">
+                <div class="w-10 h-10 bg-white rounded-lg flex items-center justify-center text-primary-700 font-bold text-xl">সি</div>
+                <h1 class="text-xl md:text-2xl font-bold">স্মার্ট ইনভয়েস জেনারেটর</h1>
+            </div>
+            <div class="flex gap-3">
+                <a href="/login" class="px-4 py-2 bg-white text-primary-700 rounded-lg font-medium hover:bg-primary-50 transition">লগইন</a>
+                <a href="/register" class="px-4 py-2 bg-accent-500 text-white rounded-lg font-medium hover:bg-accent-600 transition">নিবন্ধন</a>
+            </div>
+        </div>
+    </header>
+
+    <!-- Hero -->
+    <section class="bg-gradient-to-br from-primary-600 to-primary-800 text-white py-16 md:py-24">
+        <div class="container mx-auto px-4 text-center">
+            <h2 class="text-3xl md:text-5xl font-bold mb-6">বাংলাদেশের দোকান ও সার্ভিস ব্যবসার জন্য<br>প্রফেশনাল ইনভয়েস সল্যুশন</h2>
+            <p class="text-lg md:text-xl text-primary-100 mb-8 max-w-2xl mx-auto">মাত্র ৫০ টাকায় মাসিক সাবস্ক্রিপশনে সীমাহীন ইনভয়েস তৈরি করুন। সহজ, দ্রুত ও সম্পূর্ণ বাংলায়।</p>
+            <div class="flex flex-col sm:flex-row gap-4 justify-center">
+                <a href="/register" class="px-8 py-3 bg-accent-500 hover:bg-accent-600 text-white rounded-xl font-semibold text-lg shadow-lg transition">এখনই শুরু করুন</a>
+                <a href="/login" class="px-8 py-3 bg-white/10 hover:bg-white/20 text-white rounded-xl font-semibold text-lg border border-white/30 transition">লগইন করুন</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features -->
+    <section class="py-16 bg-white">
+        <div class="container mx-auto px-4">
+            <h3 class="text-2xl md:text-3xl font-bold text-center mb-12">কেন স্মার্ট ইনভয়েস?</h3>
+            <div class="grid md:grid-cols-3 gap-8">
+                <div class="p-6 rounded-2xl bg-gray-50 border border-gray-100 hover:shadow-md transition">
+                    <div class="w-12 h-12 bg-primary-100 text-primary-600 rounded-xl flex items-center justify-center text-2xl mb-4">১</div>
+                    <h4 class="text-xl font-semibold mb-2">সহজ ইনভয়েস তৈরি</h4>
+                    <p class="text-gray-600">কাস্টমার ও পণ্য/সেবা সিলেক্ট করে এক ক্লিকে প্রফেশনাল ইনভয়েস তৈরি করুন।</p>
+                </div>
+                <div class="p-6 rounded-2xl bg-gray-50 border border-gray-100 hover:shadow-md transition">
+                    <div class="w-12 h-12 bg-primary-100 text-primary-600 rounded-xl flex items-center justify-center text-2xl mb-4">২</div>
+                    <h4 class="text-xl font-semibold mb-2">ক্যাটাগরি ভিত্তিক পণ্য</h4>
+                    <p class="text-gray-600">কম্পিউটার, মোবাইল, ফার্মেসিসহ বিভিন্ন ক্যাটাগরির ডিফল্ট সেবা/পণ্য অটো লোড হয়।</p>
+                </div>
+                <div class="p-6 rounded-2xl bg-gray-50 border border-gray-100 hover:shadow-md transition">
+                    <div class="w-12 h-12 bg-primary-100 text-primary-600 rounded-xl flex items-center justify-center text-2xl mb-4">৩</div>
+                    <h4 class="text-xl font-semibold mb-2">মাত্র ৫০ টাকা/মাস</h4>
+                    <p class="text-gray-600">বিকাশের মাধ্যমে সহজে পেমেন্ট করে সীমাহীন ইনভয়েস তৈরির সুবিধা নিন।</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Pricing -->
+    <section class="py-16 bg-primary-50">
+        <div class="container mx-auto px-4 text-center">
+            <h3 class="text-2xl md:text-3xl font-bold mb-4">সাবস্ক্রিপশন প্ল্যান</h3>
+            <div class="max-w-md mx-auto bg-white rounded-2xl shadow-xl p-8 border-2 border-primary-200">
+                <div class="text-5xl font-bold text-primary-600 mb-2">৳৫০</div>
+                <div class="text-gray-500 mb-6">প্রতি মাস</div>
+                <ul class="text-left space-y-3 mb-8">
+                    <li class="flex items-center gap-2"><span class="text-accent-500">✓</span> সীমাহীন ইনভয়েস তৈরি</li>
+                    <li class="flex items-center gap-2"><span class="text-accent-500">✓</span> পণ্য/সেবা ব্যবস্থাপনা</li>
+                    <li class="flex items-center gap-2"><span class="text-accent-500">✓</span> কাস্টমার ম্যানেজমেন্ট</li>
+                    <li class="flex items-center gap-2"><span class="text-accent-500">✓</span> প্রিন্ট ও PDF ডাউনলোড</li>
+                    <li class="flex items-center gap-2"><span class="text-accent-500">✓</span> সম্পূর্ণ বাংলা ইন্টারফেস</li>
+                </ul>
+                <a href="/register" class="block w-full py-3 bg-primary-600 hover:bg-primary-700 text-white rounded-xl font-semibold transition">এখনই নিবন্ধন করুন</a>
+            </div>
+        </div>
+    </section>
+
+    <footer class="bg-gray-800 text-gray-300 py-8 mt-auto">
+        <div class="container mx-auto px-4 text-center">
+            <p>© ২০২৬ স্মার্ট ইনভয়েস জেনারেটর। সকল অধিকার সংরক্ষিত।</p>
+            <p class="text-sm mt-2">বাংলাদেশের ব্যবসায়ীদের জন্য তৈরি</p>
+        </div>
+    </footer>
+</div>
+{% endblock %}

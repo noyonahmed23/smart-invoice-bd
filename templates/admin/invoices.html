@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+{% block title %}সকল ইনভয়েস{% endblock %}
+{% block body %}
+<div class="min-h-screen flex">
+    <aside class="w-64 bg-gray-900 text-white hidden md:flex flex-col fixed h-full">
+        <div class="p-5 border-b border-gray-700"><span class="font-bold text-lg">অ্যাডমিন প্যানেল</span></div>
+        <nav class="flex-1 p-4 space-y-1">
+            <a href="/admin" class="block px-4 py-2.5 rounded-lg hover:bg-gray-700">ড্যাশবোর্ড</a>
+            <a href="/admin/users" class="block px-4 py-2.5 rounded-lg hover:bg-gray-700">সকল ব্যবহারকারী</a>
+            <a href="/admin/payments" class="block px-4 py-2.5 rounded-lg hover:bg-gray-700">পেমেন্ট অনুমোদন</a>
+            <a href="/admin/invoices" class="block px-4 py-2.5 rounded-lg bg-gray-700 font-medium">সকল ইনভয়েস</a>
+            <a href="/admin/categories" class="block px-4 py-2.5 rounded-lg hover:bg-gray-700">ক্যাটাগরি</a>
+        </nav>
+        <div class="p-4 border-t border-gray-700"><a href="/logout" class="block px-4 py-2 rounded-lg hover:bg-red-600 text-sm">লগআউট</a></div>
+    </aside>
+    <main class="flex-1 md:ml-64 p-4 md:p-8">
+        <h1 class="text-2xl font-bold mb-6">সকল ইনভয়েস</h1>
+        <div class="bg-white rounded-xl border overflow-hidden">
+            <table class="w-full text-sm">
+                <thead class="bg-gray-50"><tr>
+                    <th class="px-4 py-3 text-left">ইনভয়েস নম্বর</th>
+                    <th class="px-4 py-3 text-left">দোকান</th>
+                    <th class="px-4 py-3 text-left">কাস্টমার</th>
+                    <th class="px-4 py-3 text-left">তারিখ</th>
+                    <th class="px-4 py-3 text-right">মোট</th>
+                    <th class="px-4 py-3 text-center">স্ট্যাটাস</th>
+                </tr></thead>
+                <tbody>
+                {% for inv in invoices %}
+                <tr class="border-t">
+                    <td class="px-4 py-3">{{ inv.invoice_number }}</td>
+                    <td class="px-4 py-3">{{ inv.store.store_name if inv.store else '-' }}</td>
+                    <td class="px-4 py-3">{{ inv.customer.name if inv.customer else '-' }}</td>
+                    <td class="px-4 py-3">{{ inv.invoice_date.strftime('%d/%m/%Y') }}</td>
+                    <td class="px-4 py-3 text-right">৳{{ "%.0f"|format(inv.grand_total) }}</td>
+                    <td class="px-4 py-3 text-center">{{ inv.status }}</td>
+                </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </main>
+</div>
+{% endblock %}

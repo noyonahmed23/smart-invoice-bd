@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+{% block title %}ব্যবহারকারী বিস্তারিত{% endblock %}
+{% block body %}
+<div class="min-h-screen flex">
+    <aside class="w-64 bg-gray-900 text-white hidden md:flex flex-col fixed h-full">
+        <div class="p-5 border-b border-gray-700"><span class="font-bold text-lg">অ্যাডমিন প্যানেল</span></div>
+        <nav class="flex-1 p-4 space-y-1">
+            <a href="/admin" class="block px-4 py-2.5 rounded-lg hover:bg-gray-700">ড্যাশবোর্ড</a>
+            <a href="/admin/users" class="block px-4 py-2.5 rounded-lg bg-gray-700 font-medium">সকল ব্যবহারকারী</a>
+            <a href="/admin/payments" class="block px-4 py-2.5 rounded-lg hover:bg-gray-700">পেমেন্ট অনুমোদন</a>
+            <a href="/admin/invoices" class="block px-4 py-2.5 rounded-lg hover:bg-gray-700">সকল ইনভয়েস</a>
+        </nav>
+        <div class="p-4 border-t border-gray-700"><a href="/logout" class="block px-4 py-2 rounded-lg hover:bg-red-600 text-sm">লগআউট</a></div>
+    </aside>
+    <main class="flex-1 md:ml-64 p-4 md:p-8">
+        <h1 class="text-2xl font-bold mb-4">{{ u.name }}</h1>
+        <div class="grid md:grid-cols-2 gap-6">
+            <div class="bg-white rounded-xl border p-5">
+                <h2 class="font-semibold mb-3">ব্যবহারকারী তথ্য</h2>
+                <p>মোবাইল: {{ u.mobile }}</p>
+                <p>ইমেইল: {{ u.email or '-' }}</p>
+                <p>নিবন্ধন: {{ u.created_at.strftime('%d/%m/%Y') }}</p>
+            </div>
+            {% if store %}
+            <div class="bg-white rounded-xl border p-5">
+                <h2 class="font-semibold mb-3">দোকান</h2>
+                <p>{{ store.store_name }}</p>
+                <p>{{ store.address }}, {{ store.district }}</p>
+                <p>মোবাইল: {{ store.phone }}</p>
+            </div>
+            {% endif %}
+        </div>
+        <div class="mt-6 bg-white rounded-xl border p-5">
+            <h2 class="font-semibold mb-3">সাবস্ক্রিপশন</h2>
+            {% for s in subs %}
+            <p>{{ s.status }} — {{ s.start_date }} থেকে {{ s.expiry_date }}</p>
+            {% else %}<p class="text-gray-400">নেই</p>{% endfor %}
+        </div>
+        <div class="mt-6 bg-white rounded-xl border p-5">
+            <h2 class="font-semibold mb-3">ইনভয়েস ({{ invoices|length }})</h2>
+            {% for inv in invoices[:10] %}
+            <p class="text-sm">{{ inv.invoice_number }} — ৳{{ "%.0f"|format(inv.grand_total) }} — {{ inv.status }}</p>
+            {% endfor %}
+        </div>
+    </main>
+</div>
+{% endblock %}
